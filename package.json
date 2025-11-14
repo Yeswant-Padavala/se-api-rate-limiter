@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {
   "name": "rate-limiter-sprint1",
   "version": "1.0.0",
@@ -21,25 +20,3 @@
     "supertest": "^6.3.4"
   }
 }
-=======
-{
-  "name": "rate-limiter-sprint1",
-  "version": "1.0.0",
-  "description": "Core components for Sprint 1: Policy Management + Security",
-  "main": "src/app.js",
-  "scripts": {
-    "start": "node src/app.js",
-    "dev": "nodemon src/app.js"
-  },
-  "dependencies": {
-    "express": "^4.19.0",
-    "helmet": "^7.0.0",
-    "morgan": "^1.10.0",
-    "express-validator": "^7.0.1",
-    "cors": "^2.8.5"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.3"
-  }
-}
->>>>>>> 5786cad023d9787b6f4ab3dff286dd80d70a5df1
