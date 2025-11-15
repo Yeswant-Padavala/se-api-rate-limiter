@@ -5,9 +5,8 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
-    "test": "jest --runInBand --coverage"
-  }
-  ,
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --runInBand --coverage"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.19.0",
