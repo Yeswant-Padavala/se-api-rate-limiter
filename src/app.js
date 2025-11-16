@@ -7,7 +7,7 @@ import policyRoutes from "./routes/policyRoutes.js";
 import healthRoutes from "./routes/healthRoutes.js";
 
 import { applySecurityHeaders } from "./middleware/security.js";
-import { rateLimiter } from "./middleware/rateLimiter.js";
+import { burstRateLimiter } from "./middleware/burstRateLimiter.js";  // 🔄 Updated: Burst-aware rate limiter
 import { enforceTLS } from "./middleware/tlsEnforcer.js";   // ✅ TLS MIDDLEWARE
 import { logTLSConfig } from "./utils/tlsAuditLogger.js";   // ✅ TLS AUDIT LOGGER
 
@@ -23,8 +23,8 @@ app.use(helmet());
 app.use(morgan("dev"));
 app.use(applySecurityHeaders);
 
-app.use(enforceTLS);   // 🔐 Enforce TLS (Story 6.1-NF)
-app.use(rateLimiter);  // 🔄 Rate Limiter
+app.use(enforceTLS);        // 🔐 Enforce TLS (Story 6.1-NF)
+app.use(burstRateLimiter);  // 🔄 Burst-aware Rate Limiter (Story 2)
 
 // 🧩 Routes
 app.use("/api/policies", policyRoutes);
@@ -32,21 +32,36 @@ app.use("/api/health", healthRoutes);
 
 // Default route
 app.get("/", (req, res) => {
-  res.json({ message: "Rate Limiter Core API - Sprint 1" });
+  res.json({ 
+    message: "Rate Limiter Core API - Sprint 1",
+    features: [
+      "burst-traffic-handling",
+      "policy-management",
+      "rate-limiting",
+      "health-monitoring",
+      "tls-enforcement"
+    ]
+  });
 });
 
 // 🩺 Auto-recovery every 5 seconds (simulation)
-setInterval(() => {
-  autoRecovery();
-  console.log("Auto-recovery check executed");
-}, 5000);
+// Only set interval in production, not in test environment
+let autoRecoveryInterval;
+if (process.env.NODE_ENV !== "test") {
+  autoRecoveryInterval = setInterval(() => {
+    autoRecovery();
+    console.log("Auto-recovery check executed");
+  }, 5000);
+}
 
 // 🛡️ TLS Configuration Audit Log
-logTLSConfig({
-  minVersion: "TLS 1.2",
-  enforced: true,
-  certificateValidation: "enabled",
-});
+if (process.env.NODE_ENV !== "test") {
+  logTLSConfig({
+    minVersion: "TLS 1.2",
+    enforced: true,
+    certificateValidation: "enabled",
+  });
+}
 
 // Error handling
 app.use((err, req, res, next) => {
@@ -54,7 +69,20 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Internal Server Error" });
 });
 
-// Start server
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+// Start server (only if not in test environment)
+let server;
+if (process.env.NODE_ENV !== "test") {
+  server = app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+}
+
+// Export cleanup function for tests
+export const cleanup = () => {
+  if (autoRecoveryInterval) {
+    clearInterval(autoRecoveryInterval);
+  }
+  if (server) {
+    server.close();
+  }
+};
 
 export default app;
