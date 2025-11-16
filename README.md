@@ -51,3 +51,4 @@ git push
 # Update 7: Added explanation about middleware usage
 # Update 6: Added project workflow description
 # Update 7: Added explanation of rate limiting algorithm
+# Update 8: Added details about API endpoints
