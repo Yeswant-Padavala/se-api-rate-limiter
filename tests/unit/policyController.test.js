@@ -1,3 +1,5 @@
+import { jest } from "@jest/globals";
+
 import { getPolicies, createPolicy } from "../../src/controllers/policyController.js";
 import { policies } from "../../src/models/policyModel.js";
 
