@@ -55,3 +55,4 @@ git push
 # Update 9: Added notes on request validation logic
 # Update 10: Improved documentation formatting for readability
 # Update 11: Added future enhancements section
+# Update 12: Added testing instructions for all modules
