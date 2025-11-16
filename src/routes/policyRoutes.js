@@ -1,13 +1,12 @@
 import express from "express";
-import { getPolicies, createPolicy } from "../controllers/policyController.js";
+import { getPolicies, createPolicy, updatePolicy, rollbackPolicy } from "../controllers/policyController.js";
 import { validatePolicy } from "../middleware/validation.js";
 
 const router = express.Router();
 
-// 🟢 GET all policies
 router.get("/", getPolicies);
-
-// 🟣 POST new policy
 router.post("/", validatePolicy, createPolicy);
+router.put("/:id", validatePolicy, updatePolicy);
+router.post("/:id/rollback", rollbackPolicy);
 
 export default router;
