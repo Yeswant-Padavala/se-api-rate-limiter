@@ -26,6 +26,18 @@ app.get("/", (req, res) => {
 });
 
 // Error handling
+import { autoRecovery } from "./controllers/healthController.js";
+import healthRoutes from "./routes/healthRoutes.js";
+
+// Health Routes
+app.use("/api/health", healthRoutes);
+
+// Auto-recovery every 5 seconds (simulation)
+setInterval(() => {
+  autoRecovery();
+  console.log("Auto-recovery check executed");
+}, 5000);
+
 app.use((err, req, res, next) => {
   console.error("Error:", err.message);
   res.status(500).json({ error: "Internal Server Error" });
