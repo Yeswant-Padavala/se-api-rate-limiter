@@ -47,3 +47,4 @@ git commit -m "Update 19: Added test coverage notes"
 git commit -m "Update 20: Minor documentation corrections"
 git push
 # Update 4: Testing commit update
+# Update 6: Added extra notes for project explanation
