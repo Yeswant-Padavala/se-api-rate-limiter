@@ -59,3 +59,4 @@ git push
 # Update 13: Added explanation about handling API errors and exceptions
 # Update 14: Added clarification on how rate limits are calculated per user
 # Update 15: Added details about logging and monitoring features
+# Update 16: Added notes on project scalability and performance considerations
