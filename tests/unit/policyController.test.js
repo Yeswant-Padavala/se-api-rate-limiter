@@ -9,10 +9,17 @@ describe("Policy Controller Unit Tests", () => {
     const res = { json: jest.fn() };
 
     getPolicies(req, res);
-    expect(res.json).toHaveBeenCalledWith({
-      message: "Fetched all policies",
-      data: policies
-    });
+    
+    // Check that res.json was called
+    expect(res.json).toHaveBeenCalled();
+    
+    // Get the actual call arguments
+    const callArgs = res.json.mock.calls[0][0];
+    
+    // Verify the response structure
+    expect(callArgs.message).toBe("Fetched all policies");
+    expect(callArgs.data).toEqual(policies);
+    expect(callArgs.documentation).toBeDefined();
   });
 
   test("createPolicy adds a new policy", () => {

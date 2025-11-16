@@ -1,0 +1,4 @@
+[2025-11-16T16:51:27.578Z] TLS Config: {"minVersion":"TLS 1.2","enforced":true,"certificateValidation":"enabled"}
+[2025-11-16T16:53:08.461Z] TLS Config: {"minVersion":"TLS 1.2","enforced":true,"certificateValidation":"enabled"}
+[2025-11-16T17:08:19.724Z] TLS Config: {"minVersion":"TLS 1.2","enforced":true,"certificateValidation":"enabled"}
+[2025-11-16T17:36:21.618Z] TLS Config: {"minVersion":"TLS 1.2","enforced":true,"certificateValidation":"enabled"}

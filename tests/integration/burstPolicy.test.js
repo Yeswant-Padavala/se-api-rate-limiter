@@ -8,18 +8,16 @@
  * - Burst capacity validation
  */
 
-// Set test environment before importing app
-process.env.NODE_ENV = "test";
+// Set test environment BEFORE importing app
+if (typeof process !== 'undefined') {
+  process.env.NODE_ENV = "test";
+}
 
 import request from "supertest";
-import app, { cleanup } from "../../src/app.js";
+import app from "../../src/app.js";
 import { policies } from "../../src/models/policyModel.js";
 
 describe("Burst Rate Limiter Integration Tests", () => {
-  // Cleanup after all tests
-  afterAll(() => {
-    cleanup();
-  });
   /**
    * Test 1: Policy Management with Burst Configuration
    */

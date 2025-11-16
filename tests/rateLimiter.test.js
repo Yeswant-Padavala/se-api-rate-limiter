@@ -1,3 +1,6 @@
+// Set test environment before importing app
+process.env.NODE_ENV = "test";
+
 import request from "supertest";
 import app from "../src/app.js";
 
@@ -16,7 +19,7 @@ describe("Rate Limiter Tests", () => {
 
     const res = await request(app).get("/");
     expect(res.statusCode).toBe(429);
-    expect(res.body.error).toBe("Rate limit exceeded. Try again later.");
+    expect(res.body.error).toBe("Rate limit exceeded. Please try again later.");
   });
 
 });

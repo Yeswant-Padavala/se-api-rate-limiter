@@ -85,4 +85,7 @@ export const cleanup = () => {
   }
 };
 
+// Export the server reference for testing
+export { server };
+
 export default app;
