@@ -50,3 +50,4 @@ git push
 # Update 6: Added extra notes for project explanation
 # Update 7: Added explanation about middleware usage
 # Update 6: Added project workflow description
+# Update 7: Added explanation of rate limiting algorithm
