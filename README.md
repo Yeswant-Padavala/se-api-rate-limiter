@@ -48,3 +48,4 @@ git commit -m "Update 20: Minor documentation corrections"
 git push
 # Update 4: Testing commit update
 # Update 6: Added extra notes for project explanation
+# Update 7: Added explanation about middleware usage
