@@ -1,3 +1,5 @@
+import { jest } from "@jest/globals";
+
 import { applySecurityHeaders } from "../../src/middleware/security.js";
 
 describe("Security Middleware Tests", () => {
