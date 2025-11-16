@@ -57,3 +57,4 @@ git push
 # Update 11: Added future enhancements section
 # Update 12: Added testing instructions for all modules
 # Update 13: Added explanation about handling API errors and exceptions
+# Update 14: Added clarification on how rate limits are calculated per user
