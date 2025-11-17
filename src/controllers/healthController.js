@@ -1,31 +1,19 @@
-import { nodes } from "../models/nodehealthModel.js";
+import { nodes, removeUnhealthyNodes } from "../models/nodeHealthModel.js";
 
-// HEALTH CHECK ENDPOINT
-export const systemHealthCheck = (req, res) => {
+// GET /api/health/status
+export const getHealthStatus = (req, res) => {
   res.json({
-    status: "OK",
-    timestamp: new Date(),
-    nodes: nodes
+    message: "Cluster health status",
+    nodes,
   });
 };
 
-// AUTO-RECOVERY (simulated)
+// Auto-recovery logic (simulated)
 export const autoRecovery = () => {
-  nodes.forEach((node) => {
-    const random = Math.random();
+  console.log("Running auto-recovery...");
 
-    if (random < 0.1) {
-      node.status = "unhealthy";
-    } else {
-      node.status = "healthy";
-    }
+  // Remove unhealthy nodes
+  const healthyNodes = removeUnhealthyNodes();
 
-    node.lastCheck = Date.now();
-  });
-};
-
-// GET ONLY HEALTHY NODES (for load balancer)
-export const getHealthyNodes = (req, res) => {
-  const healthy = nodes.filter((n) => n.status === "healthy");
-  res.json({ healthyNodes: healthy });
+  console.log("Healthy nodes:", healthyNodes);
 };
