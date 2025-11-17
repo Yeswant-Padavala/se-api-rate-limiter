@@ -40,7 +40,7 @@ app.use(rateLimiter);
 
 // 🧩 Routes
 app.use("/api/policies", policyRoutes);
-app.use("/api/health", healthRoutes);     // Health route
+app.use("/api/health", healthRoutes);     
 app.use("/metrics", metricsRoutes);       // Metrics route
 
 // Default route
