@@ -1,7 +1,13 @@
-// Simulated cluster node states
-export const nodes = [
-    { id: 1, name: "node-1", status: "healthy", lastCheck: Date.now() },
-    { id: 2, name: "node-2", status: "healthy", lastCheck: Date.now() },
-    { id: 3, name: "node-3", status: "healthy", lastCheck: Date.now() }
+let nodeList = [
+    { id: "node-1", status: "healthy", lastChecked: Date.now() },
+    { id: "node-2", status: "healthy", lastChecked: Date.now() },
+    { id: "node-3", status: "unhealthy", lastChecked: Date.now() }
   ];
+  
+  export const nodes = nodeList;
+  
+  export const removeUnhealthyNodes = () => {
+    nodeList = nodeList.filter(node => node.status === "healthy");
+    return nodeList;
+  };
   

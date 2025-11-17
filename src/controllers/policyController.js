@@ -1,72 +1,63 @@
-import { policies } from "../models/policyModel.js";
-import { policyHistory } from "../models/policyHistoryModel.js";
+import { policies, updatePolicy } from "../models/policyModel.js";
+import { 
+  savePolicyVersion,
+  getPolicyVersions,
+  rollbackPolicyVersion
+} from "../models/policyHistoryModel.js";
 
-// GET all policies
-export const getPolicies = (req, res) => {
-  res.json({ message: "Fetched all policies", data: policies });
-};
+// UPDATE POLICY (with versioning)
+export const updatePolicyController = (req, res) => {
+  const id = parseInt(req.params.id);
+  const existingPolicy = policies.find(p => p.id === id);
 
-// CREATE new policy
-export const createPolicy = (req, res) => {
-  const { name, limit, window } = req.body;
+  if (!existingPolicy) {
+    return res.status(404).json({ error: "Policy not found" });
+  }
 
-  const newPolicy = {
-    id: policies.length + 1,
-    name,
-    limit,
-    window,
-    version: 1
-  };
+  // Save old version before update
+  savePolicyVersion(existingPolicy);
 
-  policies.push(newPolicy);
+  const updated = updatePolicy(id, req.body);
 
-  res.status(201).json({
-    message: "Policy created successfully",
-    data: newPolicy,
+  res.json({
+    message: "Policy updated successfully",
+    updatedPolicy: updated
   });
 };
 
-// UPDATE POLICY + SAVE OLD VERSION
-export const updatePolicy = (req, res) => {
-  const { id } = req.params;
-  const { name, limit, window } = req.body;
-
-  const policy = policies.find((p) => p.id == id);
-  if (!policy) return res.status(404).json({ message: "Policy not found" });
-
-  // Save old version
-  policyHistory.push({ ...policy });
-
-  // Update to new version
-  policy.name = name;
-  policy.limit = limit;
-  policy.window = window;
-  policy.version += 1;
+// GET ALL VERSIONS OF A POLICY
+export const getPolicyHistory = (req, res) => {
+  const id = parseInt(req.params.id);
+  const versions = getPolicyVersions(id);
 
   res.json({
-    message: "Policy updated & version recorded",
-    data: policy,
+    policyId: id,
+    versions
   });
 };
 
 // ROLLBACK POLICY
 export const rollbackPolicy = (req, res) => {
-  const { id } = req.params;
+  const id = parseInt(req.params.id);
+  const version = parseInt(req.params.version);
 
-  const previousVersions = policyHistory.filter((p) => p.id == id);
+  const versionData = rollbackPolicyVersion(id, version);
 
-  if (previousVersions.length === 0) {
-    return res.status(404).json({ message: "No previous versions found" });
+  if (!versionData) {
+    return res.status(404).json({ error: "Version not found" });
   }
 
-  const lastVersion = previousVersions.pop();
-
-  // Replace current policy with last version
-  const index = policies.findIndex((p) => p.id == id);
-  policies[index] = lastVersion;
+  // Apply rollback
+  const index = policies.findIndex(p => p.id === id);
+  policies[index] = {
+    id: versionData.id,
+    name: versionData.name,
+    limit: versionData.limit,
+    window: versionData.window
+  };
 
   res.json({
     message: "Rollback successful",
-    data: lastVersion,
+    activePolicy: policies[index]
   });
 };
