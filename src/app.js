@@ -1,19 +1,17 @@
+import { burstLimiter } from "./middleware/burstLimiter.js";
 import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import cors from "cors";
 
 import policyRoutes from "./routes/policyRoutes.js";
-<<<<<<< HEAD
-import healthRoutes from "./routes/healthRoutes.js";
+import healthRoutes from "./routes/healthRoutes.js";        // Kept from HEAD
+import metricsRoutes from "./routes/metricsRoutes.js";      // Kept from sprint2
 
-=======
-import metricsRoutes from "./routes/metricsRoutes.js";
->>>>>>> yp/sprint2
 import { applySecurityHeaders } from "./middleware/security.js";
 import { rateLimiter } from "./middleware/rateLimiter.js";
-import { enforceTLS } from "./middleware/tlsEnforcer.js";   // ✅ TLS MIDDLEWARE
-import { logTLSConfig } from "./utils/tlsAuditLogger.js";   // ✅ TLS AUDIT LOGGER
+import { enforceTLS } from "./middleware/tlsEnforcer.js";   // TLS MIDDLEWARE
+import { logTLSConfig } from "./utils/tlsAuditLogger.js";   // TLS AUDIT LOGGER
 
 import { autoRecovery } from "./controllers/healthController.js";
 
@@ -27,16 +25,23 @@ app.use(helmet());
 app.use(morgan("dev"));
 app.use(applySecurityHeaders);
 
-app.use(enforceTLS);   // 🔐 Enforce TLS (Story 6.1-NF)
-app.use(rateLimiter);  // 🔄 Rate Limiter
+app.use(enforceTLS);
+
+// ⚡ Burst Traffic Control (Story 2.2-F)
+app.use(
+  burstLimiter(
+    5,   // tokens per second
+    15   // burst capacity
+  )
+);
+
+// 🔄 Long-term Rate Limiter
+app.use(rateLimiter);
 
 // 🧩 Routes
 app.use("/api/policies", policyRoutes);
-<<<<<<< HEAD
-app.use("/api/health", healthRoutes);
-=======
-app.use("/metrics", metricsRoutes);
->>>>>>> yp/sprint2
+app.use("/api/health", healthRoutes);     // Health route
+app.use("/metrics", metricsRoutes);       // Metrics route
 
 // Default route
 app.get("/", (req, res) => {
