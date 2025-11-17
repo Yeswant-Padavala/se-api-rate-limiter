@@ -24,9 +24,18 @@ app.use(cors());
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(applySecurityHeaders);
+app.use(enforceTLS);
 
-app.use(enforceTLS);   // 🔐 Enforce TLS (Story 6.1-NF)
-app.use(rateLimiter);  // 🔄 Rate Limiter
+// ⚡ Burst Traffic Control
+app.use(
+  burstLimiter(
+    5,   // tokens per second
+    15   // burst capacity
+  )
+);
+
+// 🔄 Long-term Rate Limiter
+app.use(rateLimiter);
 
 // 🧩 Routes
 app.use("/api/policies", policyRoutes);
