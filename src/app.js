@@ -5,8 +5,8 @@ import morgan from "morgan";
 import cors from "cors";
 
 import policyRoutes from "./routes/policyRoutes.js";
-import healthRoutes from "./routes/healthRoutes.js";        // Kept from HEAD
-import metricsRoutes from "./routes/metricsRoutes.js";      // Kept from sprint2
+import healthRoutes from "./routes/healthRoutes.js";
+import metricsRoutes from "./routes/metricsRoutes.js";
 
 import { applySecurityHeaders } from "./middleware/security.js";
 import { rateLimiter } from "./middleware/rateLimiter.js";
@@ -24,10 +24,9 @@ app.use(cors());
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(applySecurityHeaders);
-
 app.use(enforceTLS);
 
-// ⚡ Burst Traffic Control (Story 2.2-F)
+// ⚡ Burst Traffic Control
 app.use(
   burstLimiter(
     5,   // tokens per second
@@ -40,8 +39,8 @@ app.use(rateLimiter);
 
 // 🧩 Routes
 app.use("/api/policies", policyRoutes);
-app.use("/api/health", healthRoutes);     // Health route
-app.use("/metrics", metricsRoutes);       // Metrics route
+app.use("/api/health", healthRoutes);
+app.use("/metrics", metricsRoutes);
 
 // Default route
 app.get("/", (req, res) => {
