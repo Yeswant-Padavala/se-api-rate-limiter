@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/middleware/rateLimiter.js</title>
+    <title>Code coverage report for src/middleware/burstLimiter.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/middleware</a> rateLimiter.js</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/middleware</a> burstLimiter.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>14/14</span>
+                <span class='fraction'>0/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>14/14</span>
+                <span class='fraction'>0/11</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -92,64 +92,70 @@
 <a name='L27'></a><a href='#L27'>27</a>
 <a name='L28'></a><a href='#L28'>28</a>
 <a name='L29'></a><a href='#L29'>29</a>
-<a name='L30'></a><a href='#L30'>30</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">105x</span>
-<span class="cline-any cline-yes">105x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">105x</span>
-<span class="cline-any cline-yes">2x</span>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">105x</span>
-<span class="cline-any cline-yes">5251x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">105x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">102x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">102x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// Simple in-memory rate limiter (per IP)
-const requestCounts = {};
-const WINDOW_SIZE = 60 * 1000;   // 1 minute
-const MAX_REQUESTS = 100;        // allowed requests per window
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// Token Bucket Burst Limiter
 &nbsp;
-export const rateLimiter = (req, res, next) =&gt; {
-  const ip = req.ip;
-  const currentTime = Date.now();
+export function <span class="fstat-no" title="function not covered" >burstLimiter(</span>ratePerSec, burstCapacity) {
+  let tokens = <span class="cstat-no" title="statement not covered" >burstCapacity;</span>        // max burst size
+  let lastRefill = <span class="cstat-no" title="statement not covered" >Date.now();</span>       // last refill timestamp
 &nbsp;
-  if (!requestCounts[ip]) {
-    requestCounts[ip] = [];
-  }
+<span class="cstat-no" title="statement not covered" >  return <span class="fstat-no" title="function not covered" >(r</span>eq, res, next) =&gt; {</span>
+    const now = <span class="cstat-no" title="statement not covered" >Date.now();</span>
+    const elapsed = <span class="cstat-no" title="statement not covered" >(now - lastRefill) / 1000;</span>  // convert ms → seconds
 &nbsp;
-  // keep only requests inside current time window
-  requestCounts[ip] = requestCounts[ip].filter(
-    (timestamp) =&gt; currentTime - timestamp &lt; WINDOW_SIZE
-  );
+    // Refill tokens based on elapsed time
+<span class="cstat-no" title="statement not covered" >    tokens = Math.min(</span>
+      burstCapacity,
+      tokens + elapsed * ratePerSec
+    );
 &nbsp;
-  if (requestCounts[ip].length &gt;= MAX_REQUESTS) {
-    return res.status(429).json({
-      error: "Rate limit exceeded. Try again later.",
+<span class="cstat-no" title="statement not covered" >    lastRefill = now;</span>
+&nbsp;
+    // Allow request if token is available
+<span class="cstat-no" title="statement not covered" >    if (tokens &gt;= 1) {</span>
+<span class="cstat-no" title="statement not covered" >      tokens -= 1;</span>
+<span class="cstat-no" title="statement not covered" >      return next();</span>
+    }
+&nbsp;
+    // Otherwise block request
+<span class="cstat-no" title="statement not covered" >    return res.status(429).json({</span>
+      error: "Burst limit exceeded",
+      retryAfter: 60
     });
-  }
-&nbsp;
-  // record request timestamp
-  requestCounts[ip].push(currentTime);
-  
-  next();
-};
+  };
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->

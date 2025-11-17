@@ -5,6 +5,37 @@ import {
   rollbackPolicyVersion
 } from "../models/policyHistoryModel.js";
 
+// GET ALL POLICIES
+export const getPolicies = (req, res) => {
+  res.json({
+    message: "Fetched all policies",
+    data: policies
+  });
+};
+
+// CREATE NEW POLICY
+export const createPolicy = (req, res) => {
+  const { name, limit, window } = req.body || {};
+
+  if (!name || !limit || !window) {
+    return res.status(400).json({ errors: [ { msg: "Invalid policy payload" } ] });
+  }
+
+  const newPolicy = {
+    id: policies.length ? Math.max(...policies.map(p => p.id)) + 1 : 1,
+    name,
+    limit,
+    window
+  };
+
+  policies.push(newPolicy);
+
+  res.status(201).json({
+    message: "Policy created",
+    data: newPolicy
+  });
+};
+
 // UPDATE POLICY (with versioning)
 export const updatePolicyController = (req, res) => {
   const id = parseInt(req.params.id);
