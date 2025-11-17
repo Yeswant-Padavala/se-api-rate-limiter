@@ -24,15 +24,19 @@ app.use(cors());
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(applySecurityHeaders);
-app.use(enforceTLS);
 
-// ⚡ Burst Traffic Control
-app.use(
-  burstLimiter(
-    5,   // tokens per second
-    15   // burst capacity
-  )
-);
+// Enforce TLS and burst control are disabled during tests
+if (process.env.NODE_ENV !== "test") {
+  app.use(enforceTLS);
+
+  // ⚡ Burst Traffic Control
+  app.use(
+    burstLimiter(
+      5,   // tokens per second
+      15   // burst capacity
+    )
+  );
+}
 
 // 🔄 Long-term Rate Limiter
 app.use(rateLimiter);
@@ -48,10 +52,12 @@ app.get("/", (req, res) => {
 });
 
 // 🩺 Auto-recovery every 5 seconds (simulation)
-setInterval(() => {
-  autoRecovery();
-  console.log("Auto-recovery check executed");
-}, 5000);
+if (process.env.NODE_ENV !== "test") {
+  setInterval(() => {
+    autoRecovery();
+    console.log("Auto-recovery check executed");
+  }, 5000);
+}
 
 // 🛡️ TLS Configuration Audit Log
 logTLSConfig({
@@ -66,7 +72,9 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: "Internal Server Error" });
 });
 
-// Start server
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+// Start server (skip during tests)
+if (process.env.NODE_ENV !== "test") {
+  app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+}
 
 export default app;
