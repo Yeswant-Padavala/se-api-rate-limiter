@@ -1,9 +1,9 @@
 import express from "express";
-import { systemHealthCheck, getHealthyNodes } from "../controllers/healthController.js";
+import { getHealthStatus } from "../controllers/healthController.js";
 
 const router = express.Router();
 
-router.get("/", systemHealthCheck);
-router.get("/healthy", getHealthyNodes);
+// GET /api/health/status
+router.get("/status", getHealthStatus);
 
 export default router;
