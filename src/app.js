@@ -3,6 +3,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import cors from "cors";
 import policyRoutes from "./routes/policyRoutes.js";
+import metricsRoutes from "./routes/metricsRoutes.js";
 import { applySecurityHeaders } from "./middleware/security.js";
 import { rateLimiter } from "./middleware/rateLimiter.js";   // ✅ RATE LIMITER IMPORT
 
@@ -19,6 +20,7 @@ app.use(rateLimiter);   // ✅ APPLY RATE LIMITER HERE
 
 // 🧩 Routes
 app.use("/api/policies", policyRoutes);
+app.use("/metrics", metricsRoutes);
 
 // Default route
 app.get("/", (req, res) => {
