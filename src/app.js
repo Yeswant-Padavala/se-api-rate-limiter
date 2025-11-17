@@ -4,8 +4,12 @@ import morgan from "morgan";
 import cors from "cors";
 
 import policyRoutes from "./routes/policyRoutes.js";
+<<<<<<< HEAD
 import healthRoutes from "./routes/healthRoutes.js";
 
+=======
+import metricsRoutes from "./routes/metricsRoutes.js";
+>>>>>>> yp/sprint2
 import { applySecurityHeaders } from "./middleware/security.js";
 import { rateLimiter } from "./middleware/rateLimiter.js";
 import { enforceTLS } from "./middleware/tlsEnforcer.js";   // ✅ TLS MIDDLEWARE
@@ -28,7 +32,11 @@ app.use(rateLimiter);  // 🔄 Rate Limiter
 
 // 🧩 Routes
 app.use("/api/policies", policyRoutes);
+<<<<<<< HEAD
 app.use("/api/health", healthRoutes);
+=======
+app.use("/metrics", metricsRoutes);
+>>>>>>> yp/sprint2
 
 // Default route
 app.get("/", (req, res) => {
