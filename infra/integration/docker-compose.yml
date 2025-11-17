@@ -1,0 +1,43 @@
+version: "3.7"
+services:
+  redis:
+    image: redis:6
+
+  backend:
+    build: ../..
+    command: ["npm", "run", "dev"]
+    ports:
+      - "3000:3000"
+
+  openresty:
+    image: openresty/openresty:alpine
+    volumes:
+      - ../nginx/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+      - ../nginx/lua:/usr/local/openresty/nginx/lua
+    ports:
+      - "8080:8080"
+    depends_on:
+      - backend
+      - redis
+
+  kong:
+    image: kong:3.0
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /kong/declarative/kong.yml
+    volumes:
+      - ../kong/kong.yml:/kong/declarative/kong.yml
+    ports:
+      - "8000:8000"
+    depends_on:
+      - backend
+      - redis
+
+  test-runner:
+    image: curlimages/curl
+    depends_on:
+      - openresty
+      - kong
+    volumes:
+      - ./run-tests.sh:/run-tests.sh
+    entrypoint: ["sh", "/run-tests.sh"]
