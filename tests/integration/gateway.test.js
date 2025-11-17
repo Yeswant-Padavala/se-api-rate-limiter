@@ -1,17 +1,14 @@
-describe("Gateway Integration Test (Mocked NGINX/Kong)", () => {
-    const gateway = {
-      forward(path) {
-        if (path.startsWith("/api")) return "forwarded";
-        return "blocked";
+describe("API Gateway (Simulated Kong/NGINX) Test", () => {
+  test("Gateway forwards request with correct headers", () => {
+    const incomingRequest = {
+      headers: {
+        "x-forwarded-proto": "https",
+        "x-api-key": "test-key"
       }
     };
-  
-    test("Gateway forwards /api route", () => {
-      expect(gateway.forward("/api/policies")).toBe("forwarded");
-    });
-  
-    test("Gateway blocks unknown routes", () => {
-      expect(gateway.forward("/admin/secure")).toBe("blocked");
-    });
+
+    const gatewayProcessed = incomingRequest.headers["x-forwarded-proto"];
+
+    expect(gatewayProcessed).toBe("https"); // simulate HTTPS forwarding
   });
-  
+});

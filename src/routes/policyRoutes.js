@@ -1,15 +1,10 @@
-import {
-    updatePolicyController,
-    getPolicyHistory,
-    rollbackPolicy
-  } from "../controllers/policyController.js";
-  
-  // PUT — Update policy
-  router.put("/:id", updatePolicyController);
-  
-  // GET — See all versions
-  router.get("/:id/history", getPolicyHistory);
-  
-  // POST — Rollback
-  router.post("/:id/rollback/:version", rollbackPolicy);
-  
+import express from "express";
+import { getPolicies, createPolicy } from "../controllers/policyController.js";
+import { validatePolicy } from "../middleware/validation.js";
+
+const router = express.Router();
+
+router.get("/", getPolicies);
+router.post("/", validatePolicy, createPolicy);
+
+export default router;

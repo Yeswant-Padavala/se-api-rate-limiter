@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/middleware/rateLimiter.js</title>
+    <title>Code coverage report for src/models/policyHistoryModel.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/middleware</a> rateLimiter.js</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/models</a> policyHistoryModel.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">40% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>14/14</span>
+                <span class='fraction'>4/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>0/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>0/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">44.44% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>14/14</span>
+                <span class='fraction'>4/9</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -88,67 +88,55 @@
 <a name='L23'></a><a href='#L23'>23</a>
 <a name='L24'></a><a href='#L24'>24</a>
 <a name='L25'></a><a href='#L25'>25</a>
-<a name='L26'></a><a href='#L26'>26</a>
-<a name='L27'></a><a href='#L27'>27</a>
-<a name='L28'></a><a href='#L28'>28</a>
-<a name='L29'></a><a href='#L29'>29</a>
-<a name='L30'></a><a href='#L30'>30</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">106x</span>
-<span class="cline-any cline-yes">106x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">106x</span>
-<span class="cline-any cline-yes">3x</span>
+<a name='L26'></a><a href='#L26'>26</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">106x</span>
-<span class="cline-any cline-yes">5251x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">106x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">103x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">103x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// Simple in-memory rate limiter (per IP)
-const requestCounts = {};
-const WINDOW_SIZE = 60 * 1000;   // 1 minute
-const MAX_REQUESTS = 100;        // allowed requests per window
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// Stores previous versions of policies (simple in-memory storage)
+export let policyHistory = [];
 &nbsp;
-export const rateLimiter = (req, res, next) =&gt; {
-  const ip = req.ip;
-  const currentTime = Date.now();
+// Save old version before update
+export const savePolicyVersion = <span class="fstat-no" title="function not covered" >(p</span>olicy) =&gt; {
+<span class="cstat-no" title="statement not covered" >  policyHistory.push({</span>
+    ...policy,
+    version: Date.now(),   // unique version timestamp
+    savedAt: new Date().toISOString(),
+  });
+};
 &nbsp;
-  if (!requestCounts[ip]) {
-    requestCounts[ip] = [];
-  }
+// Get all versions of a policy by ID
+export const getPolicyVersions = <span class="fstat-no" title="function not covered" >(p</span>olicyId) =&gt; {
+<span class="cstat-no" title="statement not covered" >  return policyHistory.filter(<span class="fstat-no" title="function not covered" >v </span>=&gt; <span class="cstat-no" title="statement not covered" >v.id === policyId)</span>;</span>
+};
 &nbsp;
-  // keep only requests inside current time window
-  requestCounts[ip] = requestCounts[ip].filter(
-    (timestamp) =&gt; currentTime - timestamp &lt; WINDOW_SIZE
+// Rollback function
+export const rollbackPolicyVersion = <span class="fstat-no" title="function not covered" >(p</span>olicyId, versionTimestamp) =&gt; {
+  const version = <span class="cstat-no" title="statement not covered" >policyHistory.find(</span>
+<span class="fstat-no" title="function not covered" >    v </span>=&gt; <span class="cstat-no" title="statement not covered" >v.id === policyId &amp;&amp; v.version === versionTimestamp</span>
   );
 &nbsp;
-  if (requestCounts[ip].length &gt;= MAX_REQUESTS) {
-    return res.status(429).json({
-      error: "Rate limit exceeded. Try again later.",
-    });
-  }
-&nbsp;
-  // record request timestamp
-  requestCounts[ip].push(currentTime);
-  
-  next();
+<span class="cstat-no" title="statement not covered" >  return version || null;</span>
 };
 &nbsp;</pre></td></tr></table></pre>
 

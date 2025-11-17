@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/middleware/rateLimiter.js</title>
+    <title>Code coverage report for src/algorithms/tokenBucket.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,7 +19,7 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/middleware</a> rateLimiter.js</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/algorithms</a> tokenBucket.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
@@ -32,7 +32,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
@@ -93,63 +93,63 @@
 <a name='L28'></a><a href='#L28'>28</a>
 <a name='L29'></a><a href='#L29'>29</a>
 <a name='L30'></a><a href='#L30'>30</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">106x</span>
-<span class="cline-any cline-yes">106x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">106x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">106x</span>
-<span class="cline-any cline-yes">5251x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">106x</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">103x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">103x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// Simple in-memory rate limiter (per IP)
-const requestCounts = {};
-const WINDOW_SIZE = 60 * 1000;   // 1 minute
-const MAX_REQUESTS = 100;        // allowed requests per window
-&nbsp;
-export const rateLimiter = (req, res, next) =&gt; {
-  const ip = req.ip;
-  const currentTime = Date.now();
-&nbsp;
-  if (!requestCounts[ip]) {
-    requestCounts[ip] = [];
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
+ * Token Bucket Algorithm
+ * Allows bursts up to bucket size, refills at given rate.
+ */
+export class TokenBucketRateLimiter {
+  constructor({ redisClient, refillRate, bucketSize }) {
+    this.redis = redisClient;
+    this.refillRate = refillRate;     // tokens per second
+    this.bucketSize = bucketSize;
   }
 &nbsp;
-  // keep only requests inside current time window
-  requestCounts[ip] = requestCounts[ip].filter(
-    (timestamp) =&gt; currentTime - timestamp &lt; WINDOW_SIZE
-  );
+  async isAllowed(key) {
+    const now = Date.now();
+    const data = JSON.parse((await this.redis.get(key)) || "{}");
+    const tokens = data.tokens ?? this.bucketSize;
+    const lastRefill = data.lastRefill ?? now;
 &nbsp;
-  if (requestCounts[ip].length &gt;= MAX_REQUESTS) {
-    return res.status(429).json({
-      error: "Rate limit exceeded. Try again later.",
-    });
+    const delta = Math.max(0, now - lastRefill) / 1000;
+    const refill = Math.floor(delta * this.refillRate);
+    const newTokens = Math.min(this.bucketSize, tokens + refill);
+    const allowed = newTokens &gt; 0;
+    const updated = {
+      tokens: allowed ? newTokens - 1 : newTokens,
+      lastRefill: now
+    };
+    await this.redis.set(key, JSON.stringify(updated));
+    return { allowed, remaining: updated.tokens };
   }
-&nbsp;
-  // record request timestamp
-  requestCounts[ip].push(currentTime);
-  
-  next();
-};
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
