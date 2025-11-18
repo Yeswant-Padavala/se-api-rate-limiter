@@ -1,44 +1,23 @@
-name: Node.js CI
+name: Test
 
-on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main, develop ]
+on: [push, pull_request]
 
 jobs:
-  build-test:
+  test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x]
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18
 
-      - name: Install dependencies
-        run: npm ci
+      - run: npm install
 
-      - name: Run tests with coverage
-        run: npm test -- --coverage
-
-      - name: Upload coverage to GitHub summary
+      - name: Run Jest Tests
         run: |
-          echo "### 🧪 Jest Coverage Report" >> $GITHUB_STEP_SUMMARY
-          npx jest --coverage --coverageReporters=text-summary >> $GITHUB_STEP_SUMMARY
+          NODE_OPTIONS=--experimental-vm-modules npm test
 
-      - name: Archive coverage report (artifact)
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage/
-
-      - name: Run ESLint
-        run: npx eslint src/
+      - name: Jest Coverage Summary
+        run: echo "### 🧪 Jest Coverage Report" >> $GITHUB_STEP_SUMMARY

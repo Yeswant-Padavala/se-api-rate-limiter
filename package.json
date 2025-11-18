@@ -1,23 +1,38 @@
 {
   "name": "se-api-rate-limiter",
   "version": "1.0.0",
+  "description": "API Rate Limiter with Redis, Vault, Prometheus, and Gateway Integration",
   "type": "module",
+  "main": "server.js",
+
   "scripts": {
     "dev": "node server.js",
-    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --runInBand --coverage"
+    "test": "jest --runInBand --coverage"
   },
+
   "dependencies": {
     "express": "^4.19.2",
-    "express-validator": "^7.3.0",
     "helmet": "^7.0.0",
-    "ioredis": "^5.8.2",
+    "ioredis": "^5.4.1",
     "morgan": "^1.10.0",
-    "node-vault": "^0.10.9",
-    "prom-client": "^14.2.0"
+    "prom-client": "^14.2.0",
+    "node-vault": "^0.10.0",
+    "express-validator": "^7.0.1"
   },
+
   "devDependencies": {
-    "cross-env": "^7.0.3",
+    "@jest/globals": "^29.7.0",
     "jest": "^29.7.0",
-    "supertest": "^6.3.4"
+    "supertest": "^6.3.4",
+    "cross-env": "^7.0.3"
+  },
+
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {},
+    "roots": ["<rootDir>/tests"],
+    "collectCoverage": true,
+    "collectCoverageFrom": ["src/**/*.js"],
+    "moduleFileExtensions": ["js", "json", "node"]
   }
 }
