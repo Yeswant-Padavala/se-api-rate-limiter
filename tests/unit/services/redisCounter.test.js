@@ -1,4 +1,5 @@
 import { RedisCounter } from "../../../src/services/redisCounter.js";
+import { jest } from "@jest/globals";
 
 test("increments user counter", async () => {
   const redis = {

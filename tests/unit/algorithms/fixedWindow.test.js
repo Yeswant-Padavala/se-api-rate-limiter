@@ -1,30 +1,27 @@
 import { FixedWindowRateLimiter } from "../../../src/algorithms/fixedWindow.js";
+import { jest } from "@jest/globals";
 
-const redisMock = () => {
+test("allows within limit", async () => {
   const store = new Map();
-  return {
+  const redis = {
     multi() {
       return {
-        increments: [],
         incr: (k) => {
           store.set(k, (store.get(k) || 0) + 1);
           return this;
         },
         pexpire: () => this,
-        exec: async () => [Array.from(store.values()).pop()]
+        exec: async () => [store.values().next().value]
       };
     }
   };
-};
 
-test("allows requests within the limit", async () => {
-  const redis = redisMock();
   const limiter = new FixedWindowRateLimiter({
     redisClient: redis,
     windowMs: 1000,
     limit: 5
   });
 
-  const res = await limiter.isAllowed("user1");
+  const res = await limiter.isAllowed("u1");
   expect(res.allowed).toBe(true);
 });
