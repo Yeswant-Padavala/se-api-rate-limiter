@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for models/policyModel.js</title>
+    <title>Code coverage report for middleware/rateLimiter.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">models</a> policyModel.js</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">middleware</a> rateLimiter.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">22.22% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>2/9</span>
+                <span class='fraction'>12/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>2/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>1/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">28.57% </span>
+                <span class="strong">85.71% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>2/7</span>
+                <span class='fraction'>12/14</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -80,39 +80,75 @@
 <a name='L15'></a><a href='#L15'>15</a>
 <a name='L16'></a><a href='#L16'>16</a>
 <a name='L17'></a><a href='#L17'>17</a>
-<a name='L18'></a><a href='#L18'>18</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// Active policies currently in system
-export let policies = [
-  { id: 1, name: "default", limit: 100, window: "1m" },
-  { id: 2, name: "premium", limit: 1000, window: "1m" }
-];
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// Simple in-memory rate limiter (per IP)
+const requestCounts = {};
+const WINDOW_SIZE = 60 * 1000;   // 1 minute
+const MAX_REQUESTS = 100;        // allowed requests per window
 &nbsp;
-// Update an existing policy
-export const updatePolicy = <span class="fstat-no" title="function not covered" >(p</span>olicyId, newData) =&gt; {
-  const index = <span class="cstat-no" title="statement not covered" >policies.findIndex(<span class="fstat-no" title="function not covered" >p </span>=&gt; <span class="cstat-no" title="statement not covered" >p.id === policyId)</span>;</span>
-<span class="cstat-no" title="statement not covered" >  if (index === -1) <span class="cstat-no" title="statement not covered" >return null;</span></span>
+export const rateLimiter = (req, res, next) =&gt; {
+  const ip = req.ip;
+  const currentTime = Date.now();
 &nbsp;
-  // Create updated policy object
-  const updated = <span class="cstat-no" title="statement not covered" >{ ...policies[index], ...newData };</span>
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (!requestCounts[ip]) {
+    requestCounts[ip] = [];
+  }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  policies[index] = updated;</span>
-<span class="cstat-no" title="statement not covered" >  return updated;</span>
+  // keep only requests inside current time window
+  requestCounts[ip] = requestCounts[ip].filter(
+<span class="fstat-no" title="function not covered" >    (t</span>imestamp) =&gt; <span class="cstat-no" title="statement not covered" >currentTime - timestamp &lt; WINDOW_SIZE</span>
+  );
+&nbsp;
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (requestCounts[ip].length &gt;= MAX_REQUESTS) {
+<span class="cstat-no" title="statement not covered" >    return res.status(429).json({</span>
+      error: "Rate limit exceeded. Try again later.",
+    });
+  }
+&nbsp;
+  // record request timestamp
+  requestCounts[ip].push(currentTime);
+  
+  next();
 };
 &nbsp;</pre></td></tr></table></pre>
 
