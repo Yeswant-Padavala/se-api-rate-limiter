@@ -1,4 +1,4 @@
-import rateLimiter from "../../../src/middleware/rateLimiter.js";
+import { rateLimiter } from "../../../src/middleware/rateLimiter.js";
 
 test("blocks when limiter returns not allowed", async () => {
   const limiter = {
