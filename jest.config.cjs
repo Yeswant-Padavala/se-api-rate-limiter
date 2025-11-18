@@ -1,11 +1,10 @@
 module.exports = {
   testEnvironment: "node",
   transform: {},
-  extensionsToTreatAsEsm: [".js"],
+  verbose: true,
+  roots: ["se-api-rate-limiter/tests"],
   moduleFileExtensions: ["js", "json", "node"],
   collectCoverage: true,
   collectCoverageFrom: ["src/**/*.js"],
-  coverageReporters: ["json", "lcov", "text", "clover"],
-  coverageDirectory: "coverage",
-  verbose: true
+  coverageDirectory: "coverage"
 };
