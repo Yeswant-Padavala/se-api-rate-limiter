@@ -1,80 +1,87 @@
-import { burstLimiter } from "./middleware/burstLimiter.js";
+// app.js
 import express from "express";
 import helmet from "helmet";
 import morgan from "morgan";
-import cors from "cors";
 
-import policyRoutes from "./routes/policyRoutes.js";
-import healthRoutes from "./routes/healthRoutes.js";
-import metricsRoutes from "./routes/metricsRoutes.js";
+// Middlewares
+import rateLimiterMiddleware from "./src/middleware/rateLimiter.js";
+import policyRoutes from "./src/routes/policyRoutes.js";
+import metricsRoutes from "./src/routes/metricsRoutes.js";
 
-import { applySecurityHeaders } from "./middleware/security.js";
-import { rateLimiter } from "./middleware/rateLimiter.js";
-import { enforceTLS } from "./middleware/tlsEnforcer.js";   // TLS MIDDLEWARE
-import { logTLSConfig } from "./utils/tlsAuditLogger.js";   // TLS AUDIT LOGGER
+// Security helpers
+import { SecretManager } from "./src/security/secretManager.js";
+import { sanitizeObject } from "./src/security/logSanitizer.js";
 
-import { autoRecovery } from "./controllers/healthController.js";
+// Redis
+import Redis from "ioredis";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-
-// 🧱 Middleware setup
 app.use(express.json());
-app.use(cors());
+
+// ------------------------------------
+// 1️⃣ Load Secrets from Vault
+// ------------------------------------
+const secrets = new SecretManager("kv/data/rate-limiter", 60_000);
+
+(async () => {
+  console.log("🔐 Loading secrets from Vault...");
+  await secrets.start();
+  console.log("🔐 Secrets loaded.");
+})();
+
+// ------------------------------------
+// 2️⃣ Logging (Sanitized)
+// ------------------------------------
+morgan.token("body", (req) => JSON.stringify(sanitizeObject(req.body)));
+
+app.use(
+  morgan(':method :url :status :response-time ms - :body', {
+    skip: (req) => req.path === "/metrics" || req.path === "/health"
+  })
+);
+
+// ------------------------------------
+// 3️⃣ Security Headers
+// ------------------------------------
 app.use(helmet());
-app.use(morgan("dev"));
-app.use(applySecurityHeaders);
 
-// Enforce TLS and burst control are disabled during tests
-if (process.env.NODE_ENV !== "test") {
-  app.use(enforceTLS);
+// ------------------------------------
+// 4️⃣ Redis Connection (from Vault)
+// ------------------------------------
+let redis;
 
-  // ⚡ Burst Traffic Control
-  app.use(
-    burstLimiter(
-      5,   // tokens per second
-      15   // burst capacity
-    )
-  );
-}
+setTimeout(() => {
+  redis = new Redis({
+    host: secrets.get("REDIS_HOST") || "localhost",
+    port: secrets.get("REDIS_PORT") || 6379,
+    password: secrets.get("REDIS_PASSWORD") || undefined,
+    enableReadyCheck: true
+  });
 
-// 🔄 Long-term Rate Limiter
-app.use(rateLimiter);
+  redis.on("connect", () => console.log("🔌 Redis connected"));
+  redis.on("error", (err) => console.error("❌ Redis error:", err));
+}, 1200);
 
-// 🧩 Routes
+// ------------------------------------
+// 5️⃣ Rate Limiter Middleware
+// ------------------------------------
+app.use(rateLimiterMiddleware(redis));
+
+// ------------------------------------
+// 6️⃣ Application Routes
+// ------------------------------------
+app.get("/", (req, res) => res.json({ message: "Rate Limiter OK" }));
+app.get("/health", (req, res) => res.json({ status: "ok" }));
+
 app.use("/api/policies", policyRoutes);
-app.use("/api/health", healthRoutes);
 app.use("/metrics", metricsRoutes);
 
-// Default route
-app.get("/", (req, res) => {
-  res.json({ message: "Rate Limiter Core API - Sprint 1" });
-});
-
-// 🩺 Auto-recovery every 5 seconds (simulation)
-if (process.env.NODE_ENV !== "test") {
-  setInterval(() => {
-    autoRecovery();
-    console.log("Auto-recovery check executed");
-  }, 5000);
-}
-
-// 🛡️ TLS Configuration Audit Log
-logTLSConfig({
-  minVersion: "TLS 1.2",
-  enforced: true,
-  certificateValidation: "enabled",
-});
-
-// Error handling
+// ------------------------------------
+// 7️⃣ Error Handler
+// ------------------------------------
 app.use((err, req, res, next) => {
-  console.error("Error:", err.message);
-  res.status(500).json({ error: "Internal Server Error" });
+  console.error("❌ ERROR:", sanitizeObject({ message: err.message, stack: err.stack }));
+  res.status(500).json({ error: "internal_server_error" });
 });
-
-// Start server (skip during tests)
-if (process.env.NODE_ENV !== "test") {
-  app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
-}
 
 export default app;
