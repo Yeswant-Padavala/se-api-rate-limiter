@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for algorithms/fixedWindow.js</title>
+    <title>Code coverage report for models/policyHistoryModel.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">algorithms</a> fixedWindow.js</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">models</a> policyHistoryModel.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">40% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>9/9</span>
+                <span class='fraction'>4/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>0/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">44.44% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>9/9</span>
+                <span class='fraction'>4/9</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -83,46 +83,61 @@
 <a name='L18'></a><a href='#L18'>18</a>
 <a name='L19'></a><a href='#L19'>19</a>
 <a name='L20'></a><a href='#L20'>20</a>
-<a name='L21'></a><a href='#L21'>21</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
- * Fixed Window Rate Limiter
- * Resets counter every windowMs interval.
- */
-export class FixedWindowRateLimiter {
-  constructor({ redisClient, windowMs, limit }) {
-    this.redis = redisClient;
-    this.windowMs = windowMs;
-    this.limit = limit;
-  }
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// Stores previous versions of policies (simple in-memory storage)
+export let policyHistory = [];
 &nbsp;
-  async isAllowed(key) {
-    const windowKey = `${key}:${Math.floor(Date.now() / this.windowMs)}`;
-    const tx = this.redis.multi();
-    tx.incr(windowKey);
-    tx.pexpire(windowKey, this.windowMs);
-    const [count] = await tx.exec();
-    return { allowed: count &lt;= this.limit, count };
-  }
-}
+// Save old version before update
+export const savePolicyVersion = <span class="fstat-no" title="function not covered" >(p</span>olicy) =&gt; {
+<span class="cstat-no" title="statement not covered" >  policyHistory.push({</span>
+    ...policy,
+    version: Date.now(),   // unique version timestamp
+    savedAt: new Date().toISOString(),
+  });
+};
+&nbsp;
+// Get all versions of a policy by ID
+export const getPolicyVersions = <span class="fstat-no" title="function not covered" >(p</span>olicyId) =&gt; {
+<span class="cstat-no" title="statement not covered" >  return policyHistory.filter(<span class="fstat-no" title="function not covered" >v </span>=&gt; <span class="cstat-no" title="statement not covered" >v.id === policyId)</span>;</span>
+};
+&nbsp;
+// Rollback function
+export const rollbackPolicyVersion = <span class="fstat-no" title="function not covered" >(p</span>olicyId, versionTimestamp) =&gt; {
+  const version = <span class="cstat-no" title="statement not covered" >policyHistory.find(</span>
+<span class="fstat-no" title="function not covered" >    v </span>=&gt; <span class="cstat-no" title="statement not covered" >v.id === policyId &amp;&amp; v.version === versionTimestamp</span>
+  );
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return version || null;</span>
+};
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->

@@ -1,7 +1,15 @@
-export default {
+module.exports = {
   testEnvironment: "node",
   transform: {},
-  moduleNameMapper: {
-    "^(\\.{1,2}/.*)\\.js$": "$1"
-  }
+  extensionsToTreatAsEsm: [".js"],
+
+  moduleFileExtensions: ["js", "json", "node"],
+
+  collectCoverage: true,
+  collectCoverageFrom: ["src/**/*.js"],
+  coverageReporters: ["json", "lcov", "text", "clover"],
+
+  coverageDirectory: "coverage",
+
+  verbose: true,
 };
