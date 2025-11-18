@@ -28,7 +28,7 @@ const isTest = process.env.NODE_ENV === "test";
 let secrets = null;
 if (!isTest) {
   secrets = new SecretManager("kv/data/rate-limiter", 60000);
-  await secrets.start();
+  secrets.start();
 }
 
 // ------------------------------------------------------------
