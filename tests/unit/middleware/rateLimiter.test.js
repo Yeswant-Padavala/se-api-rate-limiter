@@ -1,4 +1,4 @@
-import { rateLimiter } from "../../../src/middleware/rateLimiter.js";
+import rateLimiter from "../../../src/middleware/rateLimiter.js";
 import { jest } from "@jest/globals";
 
 test("blocks when limiter returns not allowed", async () => {
