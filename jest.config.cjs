@@ -1,9 +1,16 @@
 module.exports = {
   testEnvironment: "node",
-  transform: {},
+
+  // Enable ESM via Babel
+  transform: {
+    "^.+\\.js$": "babel-jest"
+  },
+
+  extensionsToTreatAsEsm: [".js"],
+
   roots: ["<rootDir>/tests"],
   collectCoverage: true,
   collectCoverageFrom: ["src/**/*.js"],
-  moduleFileExtensions: ["js", "json", "node"],
+  moduleFileExtensions: ["js", "json"],
   verbose: true
 };
