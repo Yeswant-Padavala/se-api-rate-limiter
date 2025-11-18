@@ -1,23 +1,57 @@
-name: Test
+name: CI - Rate Limiter
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
 
 jobs:
-  test:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+    # --- CHECKOUT PROJECT ---
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
+    # --- SETUP NODE ---
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: "18"
+        cache: "npm"
 
-      - run: npm install
+    # --- INSTALL DEPENDENCIES ---
+    - name: Install dependencies
+      run: npm install
 
-      - name: Run Jest Tests
-        run: |
-          NODE_OPTIONS=--experimental-vm-modules npm test
+    # --- FIX JEST PERMISSIONS (IMPORTANT) ---
+    - name: Fix Jest execute permission
+      run: chmod +x node_modules/.bin/jest
 
-      - name: Jest Coverage Summary
-        run: echo "### 🧪 Jest Coverage Report" >> $GITHUB_STEP_SUMMARY
+    # --- OPTIONAL: LINTING (REMOVE IF YOU DON'T USE ESLINT) ---
+    - name: Run ESLint
+      continue-on-error: true
+      run: |
+        if [ -f ".eslintrc.json" ] || [ -f ".eslintrc.js" ]; then
+          npx eslint .
+        else
+          echo "No ESLint config found, skipping."
+        fi
+
+    # --- RUN TESTS WITH COVERAGE ---
+    - name: Run Jest tests with coverage
+      run: npm test
+
+    # --- SUMMARIZE COVERAGE RESULTS ---
+    - name: Append Coverage to GitHub Summary
+      run: |
+        echo "### 🧪 Jest Coverage Report" >> $GITHUB_STEP_SUMMARY
+        npx jest --coverage --coverageReporters=text-summary >> $GITHUB_STEP_SUMMARY
+
+    # --- SAVE COVERAGE ARTIFACT ---
+    - name: Upload Coverage Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: coverage/
