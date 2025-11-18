@@ -1,29 +1,23 @@
-// Simple in-memory rate limiter (per IP)
-const requestCounts = {};
-const WINDOW_SIZE = 60 * 1000;   // 1 minute
-const MAX_REQUESTS = 100;        // allowed requests per window
+export default function rateLimiter(redis) {
+  return async function (req, res, next) {
+    if (!redis) return next(); // allow tests before redis is ready
 
-export const rateLimiter = (req, res, next) => {
-  const ip = req.ip;
-  const currentTime = Date.now();
+    const key = req.ip || "unknown";
+    const windowMs = 60000;
+    const limit = 100;
 
-  if (!requestCounts[ip]) {
-    requestCounts[ip] = [];
-  }
+    const window = Math.floor(Date.now() / windowMs);
+    const redisKey = `rl:${key}:${window}`;
 
-  // keep only requests inside current time window
-  requestCounts[ip] = requestCounts[ip].filter(
-    (timestamp) => currentTime - timestamp < WINDOW_SIZE
-  );
+    const count = await redis.incr(redisKey);
+    if (count === 1) {
+      await redis.pexpire(redisKey, windowMs);
+    }
 
-  if (requestCounts[ip].length >= MAX_REQUESTS) {
-    return res.status(429).json({
-      error: "Rate limit exceeded. Try again later.",
-    });
-  }
+    if (count > limit) {
+      return res.status(429).json({ error: "rate_limit_exceeded" });
+    }
 
-  // record request timestamp
-  requestCounts[ip].push(currentTime);
-  
-  next();
-};
+    next();
+  };
+}
