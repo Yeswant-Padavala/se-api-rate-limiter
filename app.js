@@ -53,15 +53,25 @@ app.use(helmet());
 // ------------------------------------------------------------
 let redis = null;
 
-if (!isTest) {
+if (isTest) {
+  // Mock Redis for integration tests
+  const store = new Map();
+
+  redis = {
+    incr: async (key) => {
+      const val = (store.get(key) || 0) + 1;
+      store.set(key, val);
+      return val;
+    },
+    pexpire: async () => {},
+  };
+} else {
+  // Real Redis for dev/prod
   redis = new Redis({
     host: secrets.get("REDIS_HOST") || "127.0.0.1",
     port: secrets.get("REDIS_PORT") || 6379,
     password: secrets.get("REDIS_PASSWORD") || undefined,
   });
-
-  redis.on("connect", () => console.log("🔌 Redis connected"));
-  redis.on("error", (err) => console.error("❌ Redis error:", err));
 }
 
 // ------------------------------------------------------------
