@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.71% </span>
+                <span class="strong">57.14% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>12/14</span>
+                <span class='fraction'>8/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">37.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/4</span>
+                <span class='fraction'>3/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/2</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.71% </span>
+                <span class="strong">61.53% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>12/14</span>
+                <span class='fraction'>8/13</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -86,14 +86,7 @@
 <a name='L21'></a><a href='#L21'>21</a>
 <a name='L22'></a><a href='#L22'>22</a>
 <a name='L23'></a><a href='#L23'>23</a>
-<a name='L24'></a><a href='#L24'>24</a>
-<a name='L25'></a><a href='#L25'>25</a>
-<a name='L26'></a><a href='#L26'>26</a>
-<a name='L27'></a><a href='#L27'>27</a>
-<a name='L28'></a><a href='#L28'>28</a>
-<a name='L29'></a><a href='#L29'>29</a>
-<a name='L30'></a><a href='#L30'>30</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L24'></a><a href='#L24'>24</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -103,53 +96,42 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// Simple in-memory rate limiter (per IP)
-const requestCounts = {};
-const WINDOW_SIZE = 60 * 1000;   // 1 minute
-const MAX_REQUESTS = 100;        // allowed requests per window
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">export default function rateLimiter(redis) {
+  return async function (req, res, next) {
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!redis) <span class="cstat-no" title="statement not covered" >return next(); </span>// allow tests before redis is ready
 &nbsp;
-export const rateLimiter = (req, res, next) =&gt; {
-  const ip = req.ip;
-  const currentTime = Date.now();
+    const key = req.ip || "unknown";
+    const windowMs = 60000;
+    const limit = 100;
 &nbsp;
-  <span class="missing-if-branch" title="else path not taken" >E</span>if (!requestCounts[ip]) {
-    requestCounts[ip] = [];
-  }
+    const window = Math.floor(Date.now() / windowMs);
+    const redisKey = `rl:${key}:${window}`;
 &nbsp;
-  // keep only requests inside current time window
-  requestCounts[ip] = requestCounts[ip].filter(
-<span class="fstat-no" title="function not covered" >    (t</span>imestamp) =&gt; <span class="cstat-no" title="statement not covered" >currentTime - timestamp &lt; WINDOW_SIZE</span>
-  );
+    const count = await redis.incr(redisKey);
+<span class="cstat-no" title="statement not covered" >    if (count === 1) {</span>
+<span class="cstat-no" title="statement not covered" >      await redis.pexpire(redisKey, windowMs);</span>
+    }
 &nbsp;
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (requestCounts[ip].length &gt;= MAX_REQUESTS) {
-<span class="cstat-no" title="statement not covered" >    return res.status(429).json({</span>
-      error: "Rate limit exceeded. Try again later.",
-    });
-  }
+<span class="cstat-no" title="statement not covered" >    if (count &gt; limit) {</span>
+<span class="cstat-no" title="statement not covered" >      return res.status(429).json({ error: "rate_limit_exceeded" });</span>
+    }
 &nbsp;
-  // record request timestamp
-  requestCounts[ip].push(currentTime);
-  
-  next();
-};
+<span class="cstat-no" title="statement not covered" >    next();</span>
+  };
+}
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -157,7 +139,7 @@ export const rateLimiter = (req, res, next) =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-11-18T03:48:21.828Z
+                at 2025-11-18T08:53:59.577Z
             </div>
         <script src="../prettify.js"></script>
         <script>
