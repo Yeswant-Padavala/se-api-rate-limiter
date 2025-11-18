@@ -1,6 +1,6 @@
 import { jest } from "@jest/globals";
 
-import { validatePolicy } from "../../src/middleware/validation.js";
+import { validatePolicy } from "../../../src/middleware/validation.js";
 import { validationResult } from "express-validator";
 
 describe("Validation Middleware Tests", () => {

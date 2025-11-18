@@ -1,4 +1,5 @@
 import { SecretManager } from "../../../src/security/secretManager.js";
+import { jest } from "@jest/globals";
 
 test("loads secrets from vault", async () => {
   const mockClient = {
